@@ -39,16 +39,32 @@ fun main() {
     }
 
     fun part1(input: List<String>): Int {
-        val testInput = readInput("day01/Day01")
-        val values1 = readInputToList(testInput, 0)
-        val values2 = readInputToList(testInput, 1)
+        val values1 = readInputToList(input, 0)
+        val values2 = readInputToList(input, 1)
         val differences = calculateDifferences(values1, values2)
         val sum = part1Sum(differences)
         return sum
     }
 
+    fun calculateNumberOfOccurrences(valueToSearch: Int, valueList: List<Int>): Int {
+        var count = 0
+        for (value in valueList) {
+            if (value == valueToSearch) {
+                count++
+            }
+        }
+        return count
+    }
+
     fun part2(input: List<String>): Int {
-        return input.size
+        val values1 = readInputToList(input, 0)
+        val values2 = readInputToList(input, 1)
+        var sum = 0
+        for (value in values1) {
+            var occurrencesForValue = calculateNumberOfOccurrences(value, values2)
+            sum += occurrencesForValue * value
+        }
+        return sum
     }
 
     // Read the input from the `src/Day01.txt` file.
