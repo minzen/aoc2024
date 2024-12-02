@@ -1,8 +1,5 @@
 fun main() {
 
-    fun calcDifference(previousVal: Int, currentVal: Int) {
-
-    }
     // A safe report is either gradually increasing or gradually decreasing
     // * The levels are all increasing or all decreasing
     // * Any two adjacent levels differ by at least one and at most three
@@ -45,7 +42,6 @@ fun main() {
     }
 
     fun part1(input: List<String>): Int {
-        println (input)
         var safeReportsCount = 0
         for (line in input) {
             if (isASafeReport(line)) {
