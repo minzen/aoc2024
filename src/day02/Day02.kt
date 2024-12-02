@@ -51,8 +51,38 @@ fun main() {
         return safeReportsCount
     }
 
+    fun createModifiedList(dropIndex: Int, lineAsValues: List<String>): MutableList<String> {
+        val modifiedList = mutableListOf<String>()
+        for (i in lineAsValues.indices) {
+            if (i != dropIndex) {
+                modifiedList.add(lineAsValues[i])
+            }
+        }
+        return modifiedList
+    }
+
     fun part2(input: List<String>): Int {
-        return input.size
+        var safeReportsCount = 0
+        for (line in input) {
+            if (isASafeReport(line)) {
+                safeReportsCount++
+            }
+            // Otherwise check whether one of the alternative lines (with one item removed also
+            // would be a safe report)
+            else {
+                val lineAsValues = line.split(" ")
+                var indexToDrop: Int
+                for (i in lineAsValues.indices) {
+                    indexToDrop = i
+                    var modifiedLine = createModifiedList(indexToDrop, lineAsValues)
+                    if (isASafeReport(modifiedLine.joinToString(separator = " "))) {
+                        safeReportsCount++
+                        break
+                    }
+                }
+            }
+        }
+        return safeReportsCount
     }
 
 
