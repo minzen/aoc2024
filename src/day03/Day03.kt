@@ -6,6 +6,7 @@ import readInput
 fun main() {
 
     val mulRegexPattern = """mul\(\d+,\d+\)"""
+    val doDontRegexPattern = """don't\(\).*?(do\(\))"""
 
     fun stripMulStr(input: String): Pair<Int, Int> {
         val pairStr = input.substring(4, input.length - 1).split(",")
@@ -23,9 +24,24 @@ fun main() {
         return pairs
     }
 
+    fun readInputWithDisregardingCorruptedInput(input: List<String>): MutableList<Pair<Int, Int>> {
+        val doDontRegex = doDontRegexPattern.toRegex()
+        val regexMul = mulRegexPattern.toRegex()
+        var pairs: MutableList<Pair<Int, Int>> = mutableListOf()
 
-    fun part1(input: List<String>): Int {
-        var pairs = readInputToListOfPairs(input)
+        var totalInput = ""
+        for (line in input) {
+            totalInput += line
+        }
+        val modifiedLine = totalInput.replace(doDontRegex, "")
+        val matchResults = regexMul.findAll(modifiedLine)
+        for (matchResult in matchResults) {
+            pairs.add(stripMulStr(matchResult.value))
+        }
+        return pairs
+    }
+
+    fun calcSum(pairs: MutableList<Pair<Int, Int>>): Int {
         var sum = 0
         for (pair in pairs) {
             sum += pair.first * pair.second
@@ -33,8 +49,14 @@ fun main() {
         return sum
     }
 
+    fun part1(input: List<String>): Int {
+        var pairs = readInputToListOfPairs(input)
+        return calcSum(pairs)
+    }
+
     fun part2(input: List<String>): Int {
-        return input.size
+        var pairs = readInputWithDisregardingCorruptedInput(input)
+        return calcSum(pairs)
     }
 
     val input = readInput("day03/Day03")
