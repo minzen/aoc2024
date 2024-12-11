@@ -2,20 +2,12 @@ package day11
 
 import println
 import readInput
+import java.math.BigInteger
 
 fun main() {
 
-    fun readInputToListOfIntegers(input: List<String>): List<Int> {
-        var list = mutableListOf<Int>()
-
-        for (i in input.indices) {
-            val row = input[i]
-            val splittedRow = row.split(" ")
-            for (item in splittedRow) {
-                list.add(item.toInt())
-            }
-        }
-        return list
+    fun readInputToListOfIntegers(input: List<String>): List<BigInteger> {
+        return input.flatMap { row -> row.split(" ").map { it.toBigInteger() } }
     }
 
     // Rules
@@ -25,23 +17,44 @@ fun main() {
     // are engraved on the new right stone. (The new numbers don't keep extra leading zeroes
     // If none of the other rules apply, the stone is replaced by a new stone; the old stone's number
     // multiplied by 2024 is engraved on the new stone.
-    fun applyRuleToNumber(number: Int): List<Int> {
-        var list = mutableListOf<Int>()
-        if (number == 0) {
-            list.add(1)
+    fun applyRuleToNumber(number: BigInteger): List<BigInteger> {
+        var list = mutableListOf<BigInteger>()
+        var numberAsString = number.toString()
+        if (number == BigInteger.ZERO) {
+            list.add(BigInteger.ONE)
+        } else if (numberAsString.length % 2 == 0) {
+            val leftPart = numberAsString.substring(0, numberAsString.length / 2)
+            val rightPart = numberAsString.substring(numberAsString.length / 2)
+            list.add(leftPart.toBigInteger())
+            list.add(rightPart.toBigInteger())
+        } else {
+            list.add(number * BigInteger.valueOf(2024))
         }
-        else if (number.toString().length % 2 == 0) {
+        return list
+    }
 
+    fun execComputationRounds(numberList: List<BigInteger>, rounds: Int): List<BigInteger> {
+        var currentList = numberList
+        repeat(rounds) {
+            currentList = currentList.flatMap { applyRuleToNumber(it) }
+            println("current = $currentList")
         }
+        return currentList
     }
 
     fun part1(input: List<String>): Int {
-        val list = readInputToListOfIntegers(input)
-        return list.size
+        val initialList = readInputToListOfIntegers(input)
+        //println("initial list: $initialList")
+        var resultList = execComputationRounds(initialList, 25)
+        println("resultList: $resultList")
+        return resultList.size
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val initialList = readInputToListOfIntegers(input)
+        var resultList = execComputationRounds(initialList, 75)
+        println("resultList: $resultList")
+        return resultList.size
     }
 
     val input = readInput("day11/Day11")
